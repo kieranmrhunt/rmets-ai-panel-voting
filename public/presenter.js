@@ -65,7 +65,7 @@ function renderPollList() {
   for (const poll of state.polls) {
     const button = document.createElement("button");
     button.className = `poll-button ${poll.id === state.activePollId ? "active" : ""}`;
-    button.innerHTML = `<strong>${poll.title}</strong><br><span class="muted">Prompt ${poll.promptSlide} / result ${poll.resultSlide} / ${poll.type}</span>`;
+    button.innerHTML = `<strong>${poll.title}</strong><br><span class="muted">${poll.type}</span>`;
     button.addEventListener("click", async () => {
       await api("/api/active", { method: "POST", body: JSON.stringify({ pollId: poll.id }) });
       await refresh();
@@ -132,7 +132,7 @@ function renderQuickfire(poll, result) {
 function renderResults() {
   const poll = activePoll();
   const result = state.results[poll.id];
-  resultsEl.innerHTML = `<h2>${poll.title}</h2><p class="muted">${result.total} responses. Result slide ${poll.resultSlide}.</p>`;
+  resultsEl.innerHTML = `<h2>${poll.title}</h2><p class="muted">${result.total} responses.</p>`;
   if (poll.type === "single") resultsEl.append(renderSingle(poll, result));
   if (poll.type === "allocation") resultsEl.append(renderAllocation(poll, result));
   if (poll.type === "open") resultsEl.append(renderOpen(result));

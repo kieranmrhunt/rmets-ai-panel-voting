@@ -125,6 +125,14 @@ function renderAllocation(poll) {
     event.preventDefault();
     const values = {};
     for (const input of inputs) values[input.name] = Number(input.value || 0);
+    const sum = Object.values(values).reduce((acc, value) => acc + value, 0);
+    if (sum > poll.budget) {
+      setStatus(`You have spent ${sum}. Please spend at most ${poll.budget}.`, "error");
+      return;
+    }
+    if (sum < poll.budget && !confirm(`You have only spent ${sum} of ${poll.budget} tokens. Submit anyway?`)) {
+      return;
+    }
     sendVote(poll.id, { values });
   });
   return form;
@@ -200,7 +208,7 @@ function render() {
     return;
   }
   titleEl.textContent = poll.title;
-  metaEl.textContent = `Deck slide ${poll.promptSlide}; result slide ${poll.resultSlide}`;
+  metaEl.textContent = "";
   formEl.innerHTML = "";
   if (poll.type === "single") formEl.append(renderSingle(poll));
   if (poll.type === "allocation") formEl.append(renderAllocation(poll));

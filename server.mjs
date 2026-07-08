@@ -59,8 +59,6 @@ function publicPoll(poll) {
     id: poll.id,
     title: poll.title,
     type: poll.type,
-    promptSlide: poll.promptSlide,
-    resultSlide: poll.resultSlide,
     budget: poll.budget,
     options: poll.options,
     choices: poll.choices,
@@ -92,7 +90,7 @@ function sanitizeVote(poll, payload) {
       values[option.id] = value;
       total += value;
     }
-    if (total !== poll.budget) throw new Error(`Total must be ${poll.budget}`);
+    if (total > poll.budget) throw new Error(`Spend at most ${poll.budget}`);
     return { values };
   }
 

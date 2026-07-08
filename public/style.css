@@ -65,6 +65,10 @@ h3 {
   color: var(--muted);
 }
 
+#poll-meta {
+  display: none;
+}
+
 .panel {
   margin-top: 24px;
   padding: 18px;
@@ -217,12 +221,12 @@ button {
 }
 
 .result-body {
-  overflow: hidden;
+  overflow: auto;
 }
 
 .result-slide {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   padding: 72px 76px 56px;
   color: var(--ink);
   background:
@@ -310,6 +314,31 @@ button {
 }
 
 @media (max-width: 860px) {
+  .result-slide {
+    height: auto;
+    min-height: 100vh;
+    padding: 36px 22px 44px;
+  }
+
+  .result-header h1 {
+    font-size: 34px;
+  }
+
+  .result-content {
+    margin-top: 28px;
+  }
+
+  .projector-row-top {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    font-size: 20px;
+  }
+
+  .word-list {
+    min-width: 0;
+    width: 100%;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }
