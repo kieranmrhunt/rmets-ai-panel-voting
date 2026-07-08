@@ -4,18 +4,52 @@ let state = null;
 let adminToken = new URLSearchParams(location.search).get("token") || localStorage.getItem("rmets-admin-token") || "";
 if (adminToken) localStorage.setItem("rmets-admin-token", adminToken);
 
-async function api(path, options = {}) {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      "content-type": "application/json",
-      ...(adminToken ? { "x-admin-token": adminToken } : {}),
-      ...(options.headers || {}),
-    },
-  });
-  const body = await response.json();
-  if (!response.ok) throw new Error(body.error || "Request failed");
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function transient(status) {
+  return status === 404 || status === 408 || status === 429 || status >= 500;
+}
+
+async function parseResponse(response) {
+  const text = await response.text();
+  let body = {};
+  try {
+    body = text ? JSON.parse(text) : {};
+  } catch {
+    body = { error: text || "Server did not return JSON" };
+  }
+  if (!response.ok) {
+    const error = new Error(body.error || "Request failed");
+    error.status = response.status;
+    throw error;
+  }
   return body;
+}
+
+async function api(path, options = {}) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    try {
+      const response = await fetch(path, {
+        cache: "no-store",
+        ...options,
+        headers: {
+          "content-type": "application/json",
+          "cache-control": "no-store",
+          ...(adminToken ? { "x-admin-token": adminToken } : {}),
+          ...(options.headers || {}),
+        },
+      });
+      return await parseResponse(response);
+    } catch (error) {
+      lastError = error;
+      if (!transient(error.status || 0) || attempt === 5) break;
+      await delay(350 * attempt);
+    }
+  }
+  throw lastError || new Error("Request failed");
 }
 
 function pct(count, total) {
@@ -138,7 +172,7 @@ async function refresh() {
         return refresh();
       }
     }
-    resultsEl.innerHTML = `<p class="status">${error.message}</p>`;
+    resultsEl.innerHTML = `<p class="status">Reconnecting to the vote server...</p>`;
   }
 }
 

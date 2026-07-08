@@ -269,6 +269,9 @@ await loadVotes();
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   try {
+    if (req.method === "GET" && url.pathname === "/healthz") {
+      return json(res, 200, { ok: true });
+    }
     if (url.pathname.startsWith("/api/")) await handleApi(req, res, url);
     else await serveFile(res, url.pathname);
   } catch (error) {

@@ -5,11 +5,42 @@ const eyebrowEl = document.querySelector("#eyebrow");
 const metaEl = document.querySelector("#result-meta");
 const contentEl = document.querySelector("#result-content");
 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function transient(status) {
+  return status === 404 || status === 408 || status === 429 || status >= 500;
+}
+
 async function api(path) {
-  const response = await fetch(path, { headers: { "cache-control": "no-store" } });
-  const body = await response.json();
-  if (!response.ok) throw new Error(body.error || "Request failed");
-  return body;
+  let lastError = null;
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    try {
+      const response = await fetch(path, {
+        cache: "no-store",
+        headers: { "cache-control": "no-store" },
+      });
+      const text = await response.text();
+      let body = {};
+      try {
+        body = text ? JSON.parse(text) : {};
+      } catch {
+        body = { error: text || "Server did not return JSON" };
+      }
+      if (!response.ok) {
+        const error = new Error(body.error || "Request failed");
+        error.status = response.status;
+        throw error;
+      }
+      return body;
+    } catch (error) {
+      lastError = error;
+      if (!transient(error.status || 0) || attempt === 5) break;
+      await delay(350 * attempt);
+    }
+  }
+  throw lastError || new Error("Request failed");
 }
 
 function percent(count, total) {
@@ -66,7 +97,7 @@ function renderQuickfire(poll, result) {
     const counts = result.counts[question.id] || {};
     const summary = poll.choices
       .map((choice) => `${choice} ${percent(counts[choice] || 0, result.total)}%`)
-      .join("  ·  ");
+      .join(" / ");
     contentEl.append(row(question.label, summary, 100));
   }
 }
@@ -83,7 +114,7 @@ async function refresh() {
     const suffix = pollId ? `?pollId=${encodeURIComponent(pollId)}` : "";
     const state = await api(`/api/result${suffix}`);
     const { poll, result } = state;
-    eyebrowEl.textContent = `RESULT  ·  ${typeLabel(poll.type)}`;
+    eyebrowEl.textContent = `RESULT / ${typeLabel(poll.type)}`;
     titleEl.textContent = poll.title;
     metaEl.textContent = `${result.total} responses`;
     contentEl.innerHTML = "";
@@ -93,7 +124,7 @@ async function refresh() {
     if (poll.type === "quickfire") renderQuickfire(poll, result);
   } catch (error) {
     titleEl.textContent = "Result unavailable";
-    contentEl.innerHTML = `<p class="projector-empty">${error.message}</p>`;
+    contentEl.innerHTML = `<p class="projector-empty">Reconnecting to the vote server...</p>`;
   }
 }
 

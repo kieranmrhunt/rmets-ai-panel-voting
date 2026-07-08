@@ -15,14 +15,51 @@ const voterId = (() => {
 
 let state = null;
 
-async function api(path, options = {}) {
-  const response = await fetch(path, {
-    ...options,
-    headers: { "content-type": "application/json", ...(options.headers || {}) },
-  });
-  const body = await response.json();
-  if (!response.ok) throw new Error(body.error || "Request failed");
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function transient(status) {
+  return status === 404 || status === 408 || status === 429 || status >= 500;
+}
+
+async function parseResponse(response) {
+  const text = await response.text();
+  let body = {};
+  try {
+    body = text ? JSON.parse(text) : {};
+  } catch {
+    body = { error: text || "Server did not return JSON" };
+  }
+  if (!response.ok) {
+    const error = new Error(body.error || "Request failed");
+    error.status = response.status;
+    throw error;
+  }
   return body;
+}
+
+async function api(path, options = {}) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    try {
+      const response = await fetch(path, {
+        cache: "no-store",
+        ...options,
+        headers: {
+          "content-type": "application/json",
+          "cache-control": "no-store",
+          ...(options.headers || {}),
+        },
+      });
+      return await parseResponse(response);
+    } catch (error) {
+      lastError = error;
+      if (!transient(error.status || 0) || attempt === 5) break;
+      await delay(350 * attempt);
+    }
+  }
+  throw lastError || new Error("Request failed");
 }
 
 function activePoll() {
@@ -138,13 +175,14 @@ function renderQuickfire(poll) {
 
 async function sendVote(pollId, payload) {
   try {
+    setStatus("Submitting...", "");
     await api("/api/vote", {
       method: "POST",
       body: JSON.stringify({ pollId, voterId, payload }),
     });
     setStatus("Vote received. You can change it while the poll is open.", "ok");
   } catch (error) {
-    setStatus(error.message, "error");
+    setStatus("Could not submit just now. Please try again.", "error");
   }
 }
 
@@ -168,8 +206,9 @@ async function refresh() {
   try {
     state = await api("/api/audience-state");
     render();
+    if (!statusEl.classList.contains("ok")) setStatus("", "");
   } catch (error) {
-    setStatus(error.message, "error");
+    setStatus(state ? "Reconnecting..." : "Connecting to the vote server...", "error");
   }
 }
 
