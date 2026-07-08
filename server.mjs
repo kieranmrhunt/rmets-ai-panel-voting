@@ -60,6 +60,8 @@ function publicPoll(poll) {
     title: poll.title,
     type: poll.type,
     budget: poll.budget,
+    minSelections: poll.minSelections,
+    maxSelections: poll.maxSelections,
     options: poll.options,
     choices: poll.choices,
     questions: poll.questions,
@@ -78,6 +80,19 @@ function sanitizeVote(poll, payload) {
     const optionIds = new Set(poll.options.map((option) => option.id));
     if (!optionIds.has(payload.choice)) throw new Error("Unknown option");
     return { choice: payload.choice };
+  }
+
+  if (poll.type === "multiple") {
+    const optionIds = new Set(poll.options.map((option) => option.id));
+    const choices = [...new Set(Array.isArray(payload.choices) ? payload.choices : [])];
+    const minSelections = poll.minSelections ?? 1;
+    const maxSelections = poll.maxSelections ?? poll.options.length;
+    if (choices.length < minSelections) throw new Error("Select at least one option");
+    if (choices.length > maxSelections) throw new Error(`Select at most ${maxSelections} options`);
+    for (const choice of choices) {
+      if (!optionIds.has(choice)) throw new Error("Unknown option");
+    }
+    return { choices };
   }
 
   if (poll.type === "allocation") {
@@ -125,6 +140,25 @@ function summarize(poll) {
     const counts = Object.fromEntries(poll.options.map((option) => [option.id, 0]));
     for (const response of responses) counts[response.choice] = (counts[response.choice] || 0) + 1;
     return { total: responses.length, counts };
+  }
+
+  if (poll.type === "multiple") {
+    const optionIds = new Set(poll.options.map((option) => option.id));
+    const counts = Object.fromEntries(poll.options.map((option) => [option.id, 0]));
+    let selections = 0;
+    for (const response of responses) {
+      const choices = Array.isArray(response.choices)
+        ? response.choices
+        : response.choice
+          ? [response.choice]
+          : [];
+      for (const choice of choices) {
+        if (!optionIds.has(choice)) continue;
+        counts[choice] = (counts[choice] || 0) + 1;
+        selections += 1;
+      }
+    }
+    return { total: responses.length, selections, counts };
   }
 
   if (poll.type === "allocation") {

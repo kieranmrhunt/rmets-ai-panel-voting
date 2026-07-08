@@ -6,7 +6,6 @@
       "title": "In weather and climate research, machine learning is currently...",
       "type": "single",
       "promptSlide": 4,
-      "resultSlide": 5,
       "options": [
         { "id": "A", "label": "Already transformative" },
         { "id": "B", "label": "Very useful - but mostly as an add-on" },
@@ -19,8 +18,7 @@
       "id": "poll-02",
       "title": "Where do you most trust machine learning right now?",
       "type": "single",
-      "promptSlide": 6,
-      "resultSlide": 7,
+      "promptSlide": 5,
       "options": [
         { "id": "A", "label": "Nowcasting from radar & satellite" },
         { "id": "B", "label": "Post-processing & calibration" },
@@ -37,9 +35,9 @@
     {
       "id": "poll-03",
       "title": "Which failure mode worries you most?",
-      "type": "single",
-      "promptSlide": 8,
-      "resultSlide": 9,
+      "type": "multiple",
+      "promptSlide": 6,
+      "minSelections": 1,
       "options": [
         { "id": "A", "label": "Extremes & rare events" },
         { "id": "B", "label": "Physical inconsistency" },
@@ -56,8 +54,7 @@
       "id": "poll-04",
       "title": "What should happen operationally?",
       "type": "single",
-      "promptSlide": 14,
-      "resultSlide": 15,
+      "promptSlide": 11,
       "options": [
         { "id": "A", "label": "Issue the warning - led by the AI" },
         { "id": "B", "label": "Issue a lower-confidence advisory" },
@@ -68,25 +65,10 @@
       ]
     },
     {
-      "id": "poll-05",
-      "title": "Same question. Has the room moved?",
-      "type": "single",
-      "promptSlide": 19,
-      "resultSlide": 20,
-      "options": [
-        { "id": "A", "label": "Already transformative" },
-        { "id": "B", "label": "Very useful - but mostly as an add-on" },
-        { "id": "C", "label": "Promising, but overhyped" },
-        { "id": "D", "label": "Dangerous if adopted too quickly" },
-        { "id": "E", "label": "Too broad to answer - it depends entirely on the application" }
-      ]
-    },
-    {
       "id": "scenario-b",
       "title": "Should the learned parametrisation go operational?",
       "type": "single",
-      "promptSlide": 23,
-      "resultSlide": 24,
+      "promptSlide": 15,
       "options": [
         { "id": "A", "label": "Yes - the verification improves" },
         { "id": "B", "label": "Yes, but with hard physical constraints" },
@@ -100,8 +82,7 @@
       "id": "scenario-c",
       "title": "Should public bodies use the proprietary climate-risk model?",
       "type": "single",
-      "promptSlide": 25,
-      "resultSlide": 26,
+      "promptSlide": 16,
       "options": [
         { "id": "A", "label": "Yes - if it demonstrably improves decisions" },
         { "id": "B", "label": "Only with independent audit" },
@@ -114,8 +95,7 @@
       "id": "trust-ladder",
       "title": "The highest use of a new ML weather model you would accept today",
       "type": "single",
-      "promptSlide": 27,
-      "resultSlide": 28,
+      "promptSlide": 17,
       "options": [
         { "id": "1", "label": "Research curiosity only" },
         { "id": "2", "label": "Parallel testing against NWP" },
@@ -129,8 +109,7 @@
       "id": "tokens",
       "title": "You have 100 research tokens. Spend them.",
       "type": "allocation",
-      "promptSlide": 29,
-      "resultSlide": 30,
+      "promptSlide": 18,
       "budget": 100,
       "options": [
         { "id": "obs", "label": "Better observations & data rescue" },
@@ -147,8 +126,7 @@
       "id": "prediction-market",
       "title": "By 2035, most public weather forecasts will be generated primarily by...",
       "type": "single",
-      "promptSlide": 31,
-      "resultSlide": 32,
+      "promptSlide": 19,
       "options": [
         { "id": "A", "label": "Classical NWP" },
         { "id": "B", "label": "NWP plus ML post-processing" },
@@ -162,16 +140,14 @@
       "id": "open-text",
       "title": "In one or two words, what is the most dangerous failure mode of ML in meteorology?",
       "type": "open",
-      "promptSlide": 33,
-      "resultSlide": 34
+      "promptSlide": 20
     },
     {
       "id": "quick-fire",
-      "title": "Would you publish it?",
+      "title": "How far should this leave the lab?",
       "type": "quickfire",
-      "promptSlide": 35,
-      "resultSlide": 36,
-      "choices": ["Yes", "No", "Unsure"],
+      "promptSlide": 21,
+      "choices": ["Deploy", "Trial only", "Hold back"],
       "questions": [
         { "id": "q1", "label": "Beats NWP on RMSE - but fails a known conservation test" },
         { "id": "q2", "label": "Better rare-event detection - but double the false alarms" },

@@ -100,6 +100,38 @@ function renderSingle(poll) {
   return form;
 }
 
+function renderMultiple(poll) {
+  const form = document.createElement("form");
+  const hint = document.createElement("p");
+  hint.className = "muted";
+  hint.textContent = poll.maxSelections
+    ? `Select up to ${poll.maxSelections}.`
+    : "Select all that apply.";
+  form.append(hint);
+  for (const option of poll.options) {
+    const label = document.createElement("label");
+    label.className = "option";
+    label.innerHTML = `<input type="checkbox" name="choices" value="${option.id}"><span>${option.id}. ${option.label}</span>`;
+    form.append(label);
+  }
+  form.append(submitButton());
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const choices = new FormData(form).getAll("choices");
+    const minSelections = poll.minSelections ?? 1;
+    if (choices.length < minSelections) {
+      setStatus("Please select at least one option.", "error");
+      return;
+    }
+    if (poll.maxSelections && choices.length > poll.maxSelections) {
+      setStatus(`Please select at most ${poll.maxSelections} options.`, "error");
+      return;
+    }
+    sendVote(poll.id, { choices });
+  });
+  return form;
+}
+
 function renderAllocation(poll) {
   const form = document.createElement("form");
   const total = document.createElement("p");
@@ -211,6 +243,7 @@ function render() {
   metaEl.textContent = "";
   formEl.innerHTML = "";
   if (poll.type === "single") formEl.append(renderSingle(poll));
+  if (poll.type === "multiple") formEl.append(renderMultiple(poll));
   if (poll.type === "allocation") formEl.append(renderAllocation(poll));
   if (poll.type === "open") formEl.append(renderOpen(poll));
   if (poll.type === "quickfire") formEl.append(renderQuickfire(poll));

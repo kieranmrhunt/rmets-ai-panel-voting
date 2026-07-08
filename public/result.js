@@ -103,6 +103,7 @@ function renderQuickfire(poll, result) {
 }
 
 function typeLabel(type) {
+  if (type === "multiple") return "CHECKBOX";
   if (type === "allocation") return "100 TOKENS";
   if (type === "open") return "OPEN TEXT";
   if (type === "quickfire") return "QUICK-FIRE";
@@ -118,7 +119,7 @@ async function refresh() {
     titleEl.textContent = poll.title;
     metaEl.textContent = `${result.total} responses`;
     contentEl.innerHTML = "";
-    if (poll.type === "single") renderSingle(poll, result);
+    if (poll.type === "single" || poll.type === "multiple") renderSingle(poll, result);
     if (poll.type === "allocation") renderAllocation(poll, result);
     if (poll.type === "open") renderOpen(result);
     if (poll.type === "quickfire") renderQuickfire(poll, result);

@@ -34,6 +34,6 @@ Use the same network for the laptop and audience phones. If venue Wi-Fi blocks d
 
 Do a five-minute venue test before the session: start the app, connect one phone to the same Wi-Fi, open the audience URL, submit a test vote, and confirm it appears on the presenter dashboard. Then reset the test poll.
 
-Use deck slide 3 for the join URL/QR. The prompt/result slide pairs are listed in ../rmets-ai-panel-poll-register.csv.
+Use deck slide 3 for the join URL/QR. The live poll order and prompt slides are listed in ../rmets-ai-panel-poll-register.csv.
 
 Votes are stored in data/votes.json while the server is running. Use the presenter dashboard reset buttons for rehearsal.

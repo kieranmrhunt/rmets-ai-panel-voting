@@ -60,12 +60,21 @@ function activePoll() {
   return state.polls.find((poll) => poll.id === state.activePollId);
 }
 
+function typeLabel(type) {
+  if (type === "multiple") return "checkbox";
+  if (type === "allocation") return "100 tokens";
+  if (type === "open") return "open text";
+  if (type === "quickfire") return "quick-fire";
+  return "single choice";
+}
+
 function renderPollList() {
   pollListEl.innerHTML = "<h2>Polls</h2>";
   for (const poll of state.polls) {
     const button = document.createElement("button");
     button.className = `poll-button ${poll.id === state.activePollId ? "active" : ""}`;
-    button.innerHTML = `<strong>${poll.title}</strong><br><span class="muted">${poll.type}</span>`;
+    const slide = poll.promptSlide ? `Slide ${poll.promptSlide} · ` : "";
+    button.innerHTML = `<strong>${poll.title}</strong><br><span class="muted">${slide}${typeLabel(poll.type)}</span>`;
     button.addEventListener("click", async () => {
       await api("/api/active", { method: "POST", body: JSON.stringify({ pollId: poll.id }) });
       await refresh();
@@ -74,18 +83,19 @@ function renderPollList() {
   }
 }
 
-function resultRow(label, count, total) {
+function resultRow(label, count, total, noun = "votes") {
   const percent = pct(count, total);
   const row = document.createElement("div");
   row.className = "result-row";
-  row.innerHTML = `<strong>${label}</strong><span>${count} votes / ${percent}%</span><div class="bar"><span style="width:${percent}%"></span></div>`;
+  row.innerHTML = `<strong>${label}</strong><span>${count} ${noun} / ${percent}%</span><div class="bar"><span style="width:${percent}%"></span></div>`;
   return row;
 }
 
 function renderSingle(poll, result) {
   const wrap = document.createElement("div");
   for (const option of poll.options) {
-    wrap.append(resultRow(`${option.id}. ${option.label}`, result.counts[option.id] || 0, result.total));
+    const label = poll.type === "multiple" ? "selections" : "votes";
+    wrap.append(resultRow(`${option.id}. ${option.label}`, result.counts[option.id] || 0, result.total, label));
   }
   return wrap;
 }
@@ -133,7 +143,7 @@ function renderResults() {
   const poll = activePoll();
   const result = state.results[poll.id];
   resultsEl.innerHTML = `<h2>${poll.title}</h2><p class="muted">${result.total} responses.</p>`;
-  if (poll.type === "single") resultsEl.append(renderSingle(poll, result));
+  if (poll.type === "single" || poll.type === "multiple") resultsEl.append(renderSingle(poll, result));
   if (poll.type === "allocation") resultsEl.append(renderAllocation(poll, result));
   if (poll.type === "open") resultsEl.append(renderOpen(result));
   if (poll.type === "quickfire") resultsEl.append(renderQuickfire(poll, result));
