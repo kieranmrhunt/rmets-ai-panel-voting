@@ -14,6 +14,7 @@ const voterId = (() => {
 })();
 
 let state = null;
+let renderedPollId;
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -188,6 +189,11 @@ async function sendVote(pollId, payload) {
 
 function render() {
   const poll = activePoll();
+  const nextPollId = poll?.id || null;
+  if (renderedPollId === nextPollId) return;
+  renderedPollId = nextPollId;
+  setStatus("", "");
+
   if (!poll) {
     titleEl.textContent = "No active poll";
     formEl.innerHTML = "";
@@ -206,7 +212,9 @@ async function refresh() {
   try {
     state = await api("/api/audience-state");
     render();
-    if (!statusEl.classList.contains("ok")) setStatus("", "");
+    if (statusEl.classList.contains("error") && /^(Connecting|Reconnecting)/.test(statusEl.textContent)) {
+      setStatus("", "");
+    }
   } catch (error) {
     setStatus(state ? "Reconnecting..." : "Connecting to the vote server...", "error");
   }
