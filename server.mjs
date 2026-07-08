@@ -204,6 +204,18 @@ async function handleApi(req, res, url) {
     });
   }
 
+  if (req.method === "GET" && url.pathname === "/api/result") {
+    const pollId = url.searchParams.get("pollId") || state.activePollId;
+    const poll = findPoll(pollId);
+    if (!poll) return json(res, 404, { error: "Unknown poll" });
+    return json(res, 200, {
+      eventTitle: polls.eventTitle,
+      activePollId: state.activePollId,
+      poll: publicPoll(poll),
+      result: summarize(poll),
+    });
+  }
+
   if (req.method === "GET" && url.pathname === "/api/state") {
     if (!adminOk(req)) return json(res, 401, { error: "Presenter token required" });
     return json(res, 200, {

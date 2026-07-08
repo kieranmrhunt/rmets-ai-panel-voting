@@ -12,6 +12,12 @@ Audience page: <http://localhost:8787/>
 
 Presenter dashboard: <http://localhost:8787/presenter.html>
 
+Full-screen result page for a poll:
+
+```text
+/result.html?poll=poll-01
+```
+
 ## Hosted deploy
 
 Use Render as a Node Web Service. The included `render.yaml` defines:

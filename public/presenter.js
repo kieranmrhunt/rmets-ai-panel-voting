@@ -106,6 +106,12 @@ function renderResults() {
 
   const actions = document.createElement("div");
   actions.className = "actions";
+  const resultLink = document.createElement("a");
+  resultLink.className = "secondary";
+  resultLink.href = `/result.html?poll=${encodeURIComponent(poll.id)}`;
+  resultLink.target = "_blank";
+  resultLink.rel = "noreferrer";
+  resultLink.textContent = "Open full-screen result";
   const reset = document.createElement("button");
   reset.className = "danger";
   reset.textContent = "Reset this poll";
@@ -114,7 +120,7 @@ function renderResults() {
     await api("/api/reset", { method: "POST", body: JSON.stringify({ pollId: poll.id }) });
     await refresh();
   });
-  actions.append(reset);
+  actions.append(resultLink, reset);
   resultsEl.append(actions);
 }
 

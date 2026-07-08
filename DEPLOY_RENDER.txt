@@ -36,6 +36,10 @@ Audience URL:
 Presenter dashboard:
   https://YOUR-SERVICE.onrender.com/presenter.html
 
+Full-screen result pages:
+  https://YOUR-SERVICE.onrender.com/result.html?poll=poll-01
+  https://YOUR-SERVICE.onrender.com/result.html?poll=tokens
+
 The presenter dashboard will ask for ADMIN_TOKEN. You can also open:
   https://YOUR-SERVICE.onrender.com/presenter.html?token=YOUR_TOKEN
 
@@ -44,8 +48,9 @@ Friday test
 1. Open the audience URL on a phone using mobile data.
 2. Open the presenter dashboard on your laptop.
 3. Set Poll 01 active, submit a phone vote, and confirm the result updates.
-4. Reset the test poll.
-5. Put the audience URL and QR code on deck slide 3.
+4. Click "Open full-screen result" in the presenter dashboard and confirm it updates.
+5. Reset the test poll.
+6. Put the audience URL and QR code on deck slide 3.
 
 Risk notes
 
