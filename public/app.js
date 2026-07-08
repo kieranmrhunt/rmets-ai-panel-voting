@@ -1,0 +1,177 @@
+const statusEl = document.querySelector("#status");
+const formEl = document.querySelector("#poll-form");
+const titleEl = document.querySelector("#poll-title");
+const metaEl = document.querySelector("#poll-meta");
+
+const voterId = (() => {
+  const key = "rmets-voter-id";
+  let value = localStorage.getItem(key);
+  if (!value) {
+    value = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    localStorage.setItem(key, value);
+  }
+  return value;
+})();
+
+let state = null;
+
+async function api(path, options = {}) {
+  const response = await fetch(path, {
+    ...options,
+    headers: { "content-type": "application/json", ...(options.headers || {}) },
+  });
+  const body = await response.json();
+  if (!response.ok) throw new Error(body.error || "Request failed");
+  return body;
+}
+
+function activePoll() {
+  return state.activePoll;
+}
+
+function setStatus(message, tone = "") {
+  statusEl.textContent = message;
+  statusEl.className = `status ${tone}`;
+}
+
+function submitButton() {
+  const actions = document.createElement("div");
+  actions.className = "actions";
+  const button = document.createElement("button");
+  button.className = "primary";
+  button.type = "submit";
+  button.textContent = "Submit vote";
+  actions.append(button);
+  return actions;
+}
+
+function renderSingle(poll) {
+  const form = document.createElement("form");
+  for (const option of poll.options) {
+    const label = document.createElement("label");
+    label.className = "option";
+    label.innerHTML = `<input type="radio" name="choice" value="${option.id}" required><span>${option.id}. ${option.label}</span>`;
+    form.append(label);
+  }
+  form.append(submitButton());
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const choice = new FormData(form).get("choice");
+    sendVote(poll.id, { choice });
+  });
+  return form;
+}
+
+function renderAllocation(poll) {
+  const form = document.createElement("form");
+  const total = document.createElement("p");
+  total.className = "muted";
+  const inputs = [];
+  for (const option of poll.options) {
+    const row = document.createElement("label");
+    row.className = "number-row";
+    row.innerHTML = `<span>${option.label}</span><input type="number" min="0" max="${poll.budget}" step="1" value="0" name="${option.id}">`;
+    const input = row.querySelector("input");
+    inputs.push(input);
+    form.append(row);
+  }
+  function updateTotal() {
+    const sum = inputs.reduce((acc, input) => acc + Number(input.value || 0), 0);
+    total.textContent = `${sum} / ${poll.budget} tokens allocated`;
+  }
+  inputs.forEach((input) => input.addEventListener("input", updateTotal));
+  updateTotal();
+  form.prepend(total);
+  form.append(submitButton());
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const values = {};
+    for (const input of inputs) values[input.name] = Number(input.value || 0);
+    sendVote(poll.id, { values });
+  });
+  return form;
+}
+
+function renderOpen(poll) {
+  const form = document.createElement("form");
+  const textarea = document.createElement("textarea");
+  textarea.name = "text";
+  textarea.maxLength = 80;
+  textarea.required = true;
+  textarea.placeholder = "One or two words";
+  form.append(textarea, submitButton());
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    sendVote(poll.id, { text: textarea.value });
+  });
+  return form;
+}
+
+function renderQuickfire(poll) {
+  const form = document.createElement("form");
+  for (const question of poll.questions) {
+    const row = document.createElement("div");
+    row.className = "quick-row";
+    const title = document.createElement("h3");
+    title.textContent = question.label;
+    const choices = document.createElement("div");
+    choices.className = "quick-choices";
+    for (const choice of poll.choices) {
+      const id = `${question.id}-${choice}`;
+      const label = document.createElement("label");
+      label.innerHTML = `<input type="radio" name="${question.id}" id="${id}" value="${choice}" required> ${choice}`;
+      choices.append(label);
+    }
+    row.append(title, choices);
+    form.append(row);
+  }
+  form.append(submitButton());
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const answers = {};
+    for (const question of poll.questions) answers[question.id] = data.get(question.id);
+    sendVote(poll.id, { answers });
+  });
+  return form;
+}
+
+async function sendVote(pollId, payload) {
+  try {
+    await api("/api/vote", {
+      method: "POST",
+      body: JSON.stringify({ pollId, voterId, payload }),
+    });
+    setStatus("Vote received. You can change it while the poll is open.", "ok");
+  } catch (error) {
+    setStatus(error.message, "error");
+  }
+}
+
+function render() {
+  const poll = activePoll();
+  if (!poll) {
+    titleEl.textContent = "No active poll";
+    formEl.innerHTML = "";
+    return;
+  }
+  titleEl.textContent = poll.title;
+  metaEl.textContent = `Deck slide ${poll.promptSlide}; result slide ${poll.resultSlide}`;
+  formEl.innerHTML = "";
+  if (poll.type === "single") formEl.append(renderSingle(poll));
+  if (poll.type === "allocation") formEl.append(renderAllocation(poll));
+  if (poll.type === "open") formEl.append(renderOpen(poll));
+  if (poll.type === "quickfire") formEl.append(renderQuickfire(poll));
+}
+
+async function refresh() {
+  try {
+    state = await api("/api/audience-state");
+    render();
+  } catch (error) {
+    setStatus(error.message, "error");
+  }
+}
+
+refresh();
+setInterval(refresh, 4000);

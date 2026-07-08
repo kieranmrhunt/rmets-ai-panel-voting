@@ -1,0 +1,52 @@
+Deploy this voting app on Render
+
+Why Render
+
+For Friday, use a small always-on web service rather than a free/sleeping service. Audience phones get a public HTTPS URL, so they do not need to reach your laptop directly over auditorium Wi-Fi.
+
+What to deploy
+
+Deploy the contents of this rmets-voting-app folder as a Node web service.
+
+Recommended settings
+
+Provider: Render
+Service type: Web Service
+Runtime: Node
+Build command: npm install
+Start command: npm start
+Plan: Starter or better, not Free, for a live event
+Region: London/Europe if available
+Environment variables:
+  ADMIN_TOKEN = make-a-long-random-password
+  DATA_DIR = /var/data
+Persistent disk:
+  Mount path: /var/data
+  Size: 1 GB is plenty
+
+Using render.yaml
+
+If this folder is in a GitHub repo, Render can detect render.yaml as a blueprint. It defines the Node service, the persistent disk, DATA_DIR, and a private ADMIN_TOKEN field you fill in on Render.
+
+After deploy
+
+Audience URL:
+  https://YOUR-SERVICE.onrender.com/
+
+Presenter dashboard:
+  https://YOUR-SERVICE.onrender.com/presenter.html
+
+The presenter dashboard will ask for ADMIN_TOKEN. You can also open:
+  https://YOUR-SERVICE.onrender.com/presenter.html?token=YOUR_TOKEN
+
+Friday test
+
+1. Open the audience URL on a phone using mobile data.
+2. Open the presenter dashboard on your laptop.
+3. Set Poll 01 active, submit a phone vote, and confirm the result updates.
+4. Reset the test poll.
+5. Put the audience URL and QR code on deck slide 3.
+
+Risk notes
+
+This is good for a panel-room poll. It is not hardened for sensitive elections: votes are anonymous, one vote per browser per poll, and the presenter token protects poll switching/resetting.

@@ -1,0 +1,184 @@
+{
+  "eventTitle": "RMetS AI in meteorology panel",
+  "polls": [
+    {
+      "id": "poll-01",
+      "title": "In weather and climate research, machine learning is currently...",
+      "type": "single",
+      "promptSlide": 4,
+      "resultSlide": 5,
+      "options": [
+        { "id": "A", "label": "Already transformative" },
+        { "id": "B", "label": "Very useful - but mostly as an add-on" },
+        { "id": "C", "label": "Promising, but overhyped" },
+        { "id": "D", "label": "Dangerous if adopted too quickly" },
+        { "id": "E", "label": "Too broad to answer - it depends entirely on the application" }
+      ]
+    },
+    {
+      "id": "poll-02",
+      "title": "Where do you most trust machine learning right now?",
+      "type": "single",
+      "promptSlide": 6,
+      "resultSlide": 7,
+      "options": [
+        { "id": "A", "label": "Nowcasting from radar & satellite" },
+        { "id": "B", "label": "Post-processing & calibration" },
+        { "id": "C", "label": "Emulating expensive model components" },
+        { "id": "D", "label": "Learned parametrisations" },
+        { "id": "E", "label": "Global medium-range forecasting" },
+        { "id": "F", "label": "Seasonal & decadal prediction" },
+        { "id": "G", "label": "Climate projections" },
+        { "id": "H", "label": "Impact & climate-risk modelling" },
+        { "id": "I", "label": "Communication & decision support" },
+        { "id": "J", "label": "Nowhere much, yet" }
+      ]
+    },
+    {
+      "id": "poll-03",
+      "title": "Which failure mode worries you most?",
+      "type": "single",
+      "promptSlide": 8,
+      "resultSlide": 9,
+      "options": [
+        { "id": "A", "label": "Extremes & rare events" },
+        { "id": "B", "label": "Physical inconsistency" },
+        { "id": "C", "label": "Poor uncertainty quantification" },
+        { "id": "D", "label": "Distribution shift & a changing climate" },
+        { "id": "E", "label": "Opaque commercial systems" },
+        { "id": "F", "label": "Reproducibility & closed data" },
+        { "id": "G", "label": "Deskilling human forecasters" },
+        { "id": "H", "label": "Energy & compute cost" },
+        { "id": "I", "label": "Unequal global data coverage" }
+      ]
+    },
+    {
+      "id": "poll-04",
+      "title": "What should happen operationally?",
+      "type": "single",
+      "promptSlide": 14,
+      "resultSlide": 15,
+      "options": [
+        { "id": "A", "label": "Issue the warning - led by the AI" },
+        { "id": "B", "label": "Issue a lower-confidence advisory" },
+        { "id": "C", "label": "Defer to the human forecaster" },
+        { "id": "D", "label": "Wait for observational confirmation" },
+        { "id": "E", "label": "Keep the AI internal - never in public warnings" },
+        { "id": "F", "label": "It depends on impact & vulnerability, not just the meteorology" }
+      ]
+    },
+    {
+      "id": "poll-05",
+      "title": "Same question. Has the room moved?",
+      "type": "single",
+      "promptSlide": 19,
+      "resultSlide": 20,
+      "options": [
+        { "id": "A", "label": "Already transformative" },
+        { "id": "B", "label": "Very useful - but mostly as an add-on" },
+        { "id": "C", "label": "Promising, but overhyped" },
+        { "id": "D", "label": "Dangerous if adopted too quickly" },
+        { "id": "E", "label": "Too broad to answer - it depends entirely on the application" }
+      ]
+    },
+    {
+      "id": "scenario-b",
+      "title": "Should the learned parametrisation go operational?",
+      "type": "single",
+      "promptSlide": 23,
+      "resultSlide": 24,
+      "options": [
+        { "id": "A", "label": "Yes - the verification improves" },
+        { "id": "B", "label": "Yes, but with hard physical constraints" },
+        { "id": "C", "label": "Only in an ensemble or experimental stream" },
+        { "id": "D", "label": "Not until it is interpretable" },
+        { "id": "E", "label": "Not in an operational model, full stop" },
+        { "id": "F", "label": "I need more information" }
+      ]
+    },
+    {
+      "id": "scenario-c",
+      "title": "Should public bodies use the proprietary climate-risk model?",
+      "type": "single",
+      "promptSlide": 25,
+      "resultSlide": 26,
+      "options": [
+        { "id": "A", "label": "Yes - if it demonstrably improves decisions" },
+        { "id": "B", "label": "Only with independent audit" },
+        { "id": "C", "label": "Only alongside open, public models" },
+        { "id": "D", "label": "Not for public-interest decisions" },
+        { "id": "E", "label": "It depends on the decision & its consequences" }
+      ]
+    },
+    {
+      "id": "trust-ladder",
+      "title": "The highest use of a new ML weather model you would accept today",
+      "type": "single",
+      "promptSlide": 27,
+      "resultSlide": 28,
+      "options": [
+        { "id": "1", "label": "Research curiosity only" },
+        { "id": "2", "label": "Parallel testing against NWP" },
+        { "id": "3", "label": "Internal forecaster guidance" },
+        { "id": "4", "label": "Public forecast product, with caveats" },
+        { "id": "5", "label": "Operational warnings" },
+        { "id": "6", "label": "Fully automated decision-making" }
+      ]
+    },
+    {
+      "id": "tokens",
+      "title": "You have 100 research tokens. Spend them.",
+      "type": "allocation",
+      "promptSlide": 29,
+      "resultSlide": 30,
+      "budget": 100,
+      "options": [
+        { "id": "obs", "label": "Better observations & data rescue" },
+        { "id": "foundation", "label": "Foundation weather models" },
+        { "id": "hybrid", "label": "Hybrid ML-NWP models" },
+        { "id": "param", "label": "Learned parametrisations" },
+        { "id": "uncertainty", "label": "Uncertainty & extremes evaluation" },
+        { "id": "impact", "label": "Impact-based forecasting" },
+        { "id": "benchmarks", "label": "Open benchmarks & reproducibility" },
+        { "id": "training", "label": "Training meteorologists in ML" }
+      ]
+    },
+    {
+      "id": "prediction-market",
+      "title": "By 2035, most public weather forecasts will be generated primarily by...",
+      "type": "single",
+      "promptSlide": 31,
+      "resultSlide": 32,
+      "options": [
+        { "id": "A", "label": "Classical NWP" },
+        { "id": "B", "label": "NWP plus ML post-processing" },
+        { "id": "C", "label": "Hybrid physics-ML models" },
+        { "id": "D", "label": "Fully data-driven AI models" },
+        { "id": "E", "label": "A mixture - by lead time and variable" },
+        { "id": "F", "label": "Impossible to say" }
+      ]
+    },
+    {
+      "id": "open-text",
+      "title": "In one or two words, what is the most dangerous failure mode of ML in meteorology?",
+      "type": "open",
+      "promptSlide": 33,
+      "resultSlide": 34
+    },
+    {
+      "id": "quick-fire",
+      "title": "Would you publish it?",
+      "type": "quickfire",
+      "promptSlide": 35,
+      "resultSlide": 36,
+      "choices": ["Yes", "No", "Unsure"],
+      "questions": [
+        { "id": "q1", "label": "Beats NWP on RMSE - but fails a known conservation test" },
+        { "id": "q2", "label": "Better rare-event detection - but double the false alarms" },
+        { "id": "q3", "label": "Trained on reanalysis, works historically - untested in a future climate" },
+        { "id": "q4", "label": "A commercial model that performs well - but cannot be independently reproduced" },
+        { "id": "q5", "label": "Uninterpretable - but its probabilistic forecasts are well calibrated" }
+      ]
+    }
+  ]
+}

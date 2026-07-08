@@ -1,0 +1,12 @@
+{
+  "name": "rmets-voting-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs --host 0.0.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

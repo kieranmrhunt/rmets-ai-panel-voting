@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: rmets-ai-panel-voting
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
+      - key: ADMIN_TOKEN
+        sync: false
+    disk:
+      name: vote-data
+      mountPath: /var/data
+      sizeGB: 1
