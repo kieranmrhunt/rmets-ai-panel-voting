@@ -18,8 +18,9 @@
     {
       "id": "poll-02",
       "title": "Where do you most trust machine learning right now?",
-      "type": "single",
+      "type": "multiple",
       "promptSlide": 5,
+      "minSelections": 1,
       "options": [
         { "id": "A", "label": "Nowcasting from radar & satellite" },
         { "id": "B", "label": "Post-processing & calibration" },
