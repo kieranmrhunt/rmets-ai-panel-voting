@@ -4,8 +4,9 @@
     {
       "id": "poll-01",
       "title": "In weather and climate research, machine learning is currently...",
-      "type": "single",
+      "type": "multiple",
       "promptSlide": 4,
+      "minSelections": 1,
       "options": [
         { "id": "A", "label": "Already transformative" },
         { "id": "B", "label": "Very useful - but mostly as an add-on" },
