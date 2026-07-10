@@ -83,8 +83,9 @@
     {
       "id": "scenario-c",
       "title": "Should public bodies use the proprietary climate-risk model?",
-      "type": "single",
+      "type": "multiple",
       "promptSlide": 16,
+      "minSelections": 1,
       "options": [
         { "id": "A", "label": "Yes - if it demonstrably improves decisions" },
         { "id": "B", "label": "Only with independent audit" },
